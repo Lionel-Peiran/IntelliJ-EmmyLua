@@ -189,6 +189,9 @@ LONG_STRING=\[=*\[[\s\S]*\]=*\]
   "\""                        { yybegin(xDOUBLE_QUOTED_STRING); yypushback(yylength()); }
   "'"                         { yybegin(xSINGLE_QUOTED_STRING); yypushback(yylength()); }
 
+  "dict"                      { return DICT;} // dict
+  "list"                      { return LIST;} // list
+
   {ID}                        { return ID; }
   {NUMBER}                    { return NUMBER; }
 

@@ -82,27 +82,27 @@ class GenericTest : TestCompletionBase() {
         }
     }
 
-    fun `test custom iterator`() {
-        myFixture.configureByFile("class.lua")
-        doTest("""
-            --- test_generic.lua
-
-            ---@generic T
-            ---@param list T[]
-            ---@return fun():number, T
-            local function myIterator(list)
-                local idx = 0
-                return nil -- todo
-            end
-
-            ---@type Emmy[]
-            local emmyList = {}
-
-            for i, em in myIterator(emmyList) do
-                em.--[[caret]]
-            end
-        """) {
-            assertTrue(it.contains("sayHello"))
-        }
-    }
+//    fun `test custom iterator`() {
+//        myFixture.configureByFile("class.lua")
+//        doTest("""
+//            --- test_generic.lua
+//
+//            ---@generic T
+//            ---@param list T[]
+//            ---@return fun():number, T
+//            local function myIterator(list)
+//                local idx = 0
+//                return nil -- todo
+//            end
+//
+//            ---@type Emmy[]
+//            local emmyList = {}
+//
+//            for i, em in myIterator(emmyList) do
+//                em.--[[caret]]
+//            end
+//        """) {
+//            assertTrue(it.contains("sayHello"))
+//        }
+//    }
 }

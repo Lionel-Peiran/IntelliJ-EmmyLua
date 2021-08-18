@@ -15,8 +15,8 @@ import com.tang.intellij.lua.stubs.LuaNameDefStub;
 
 public class LuaParamNameDefImpl extends LuaNameDefImpl implements LuaParamNameDef {
 
-  public LuaParamNameDefImpl(@NotNull LuaNameDefStub stub, @NotNull IStubElementType type) {
-    super(stub, type);
+  public LuaParamNameDefImpl(@NotNull LuaNameDefStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
   }
 
   public LuaParamNameDefImpl(@NotNull ASTNode node) {
@@ -27,10 +27,12 @@ public class LuaParamNameDefImpl extends LuaNameDefImpl implements LuaParamNameD
     super(stub, type, node);
   }
 
+  @Override
   public void accept(@NotNull LuaVisitor visitor) {
     visitor.visitParamNameDef(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof LuaVisitor) accept((LuaVisitor)visitor);
     else super.accept(visitor);

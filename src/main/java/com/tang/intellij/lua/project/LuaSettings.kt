@@ -40,7 +40,8 @@ class LuaSettings : PersistentStateComponent<LuaSettings> {
     var isStrictDoc: Boolean = false
 
     //在未匹配end的statement后回车会自动补全
-    var isSmartCloseEnd: Boolean = true
+    // 暂时关闭
+    var isSmartCloseEnd: Boolean = false
 
     //在代码完成时使用参数完成模板
     var autoInsertParameters: Boolean = false

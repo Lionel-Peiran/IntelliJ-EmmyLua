@@ -105,6 +105,10 @@
         BIT_RTRT = ">>"
         BIT_TILDE = "~"
         DOUBLE_DIV = "//"
+
+        //Customized
+        DICT = "dict"
+        LIST = "list"
   ]
 
   hooks("localDef|assignStat|tableField") = [leftBinder="MY_LEFT_COMMENT_BINDER" rightBinder="MY_RIGHT_COMMENT_BINDER"]

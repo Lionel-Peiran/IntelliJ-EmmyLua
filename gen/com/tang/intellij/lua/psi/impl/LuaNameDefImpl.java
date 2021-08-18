@@ -17,8 +17,8 @@ import com.intellij.psi.tree.IElementType;
 
 public class LuaNameDefImpl extends StubBasedPsiElementBase<LuaNameDefStub> implements LuaNameDef {
 
-  public LuaNameDefImpl(@NotNull LuaNameDefStub stub, @NotNull IStubElementType type) {
-    super(stub, type);
+  public LuaNameDefImpl(@NotNull LuaNameDefStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
   }
 
   public LuaNameDefImpl(@NotNull ASTNode node) {
@@ -33,6 +33,7 @@ public class LuaNameDefImpl extends StubBasedPsiElementBase<LuaNameDefStub> impl
     visitor.visitNameDef(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof LuaVisitor) accept((LuaVisitor)visitor);
     else super.accept(visitor);

@@ -20,8 +20,8 @@ import com.intellij.psi.tree.IElementType;
 
 public class LuaClassMethodDefImpl extends StubBasedPsiElementBase<LuaClassMethodStub> implements LuaClassMethodDef {
 
-  public LuaClassMethodDefImpl(@NotNull LuaClassMethodStub stub, @NotNull IStubElementType type) {
-    super(stub, type);
+  public LuaClassMethodDefImpl(@NotNull LuaClassMethodStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
   }
 
   public LuaClassMethodDefImpl(@NotNull ASTNode node) {
@@ -36,6 +36,7 @@ public class LuaClassMethodDefImpl extends StubBasedPsiElementBase<LuaClassMetho
     visitor.visitClassMethodDef(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof LuaVisitor) accept((LuaVisitor)visitor);
     else super.accept(visitor);

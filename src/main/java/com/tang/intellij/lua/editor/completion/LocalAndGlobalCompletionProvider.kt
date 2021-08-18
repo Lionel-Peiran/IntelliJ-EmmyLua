@@ -162,7 +162,11 @@ class LocalAndGlobalCompletionProvider(private val mask: Int) : ClassMemberCompl
 
                 //Lua5.3
                 LuaTypes.GOTO,
-                LuaTypes.DOUBLE_COLON
+                LuaTypes.DOUBLE_COLON,
+
+                //Customized
+                LuaTypes.LIST,
+                LuaTypes.DICT
         )
     }
 }

@@ -121,7 +121,10 @@ class LuaParserDefinition : ParserDefinition {
 
                 //lua5.3
                 LuaTypes.DOUBLE_COLON,
-                LuaTypes.GOTO
+                LuaTypes.GOTO,
+
+                LuaTypes.DICT,
+                LuaTypes.LIST
         )
         val LUA52_BIN_OP_SET = TokenSet.create(
                 LuaTypes.BIT_AND,

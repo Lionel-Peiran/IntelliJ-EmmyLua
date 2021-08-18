@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     id("org.jetbrains.intellij").version("0.6.5")
-    id("org.jetbrains.kotlin.jvm").version("1.4.20")
+    id("org.jetbrains.kotlin.jvm").version("1.5.10")
     id("de.undercouch.download").version("3.4.3")
 }
 
@@ -42,8 +42,8 @@ data class BuildData(
 val buildDataList = listOf(
     BuildData(
         ideaSDKShortVersion = "212",
-        ideaSDKVersion = "LATEST-EAP-SNAPSHOT",
-        sinceBuild = "212",
+        ideaSDKVersion = "202.6397.94",
+        sinceBuild = "202.0",
         untilBuild = "212.*",
         bunch = "212"
     ),
@@ -250,7 +250,7 @@ project(":") {
 
     tasks {
         buildPlugin {
-            dependsOn("bunch", "installEmmyDebugger")
+            dependsOn("installEmmyDebugger")
             archiveBaseName.set(buildVersionData.archiveName)
             from(fileTree(resDir) { include("debugger/**") }) {
                 into("/${project.name}/classes/")

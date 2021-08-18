@@ -253,6 +253,120 @@ object LuaExpressionParser {
                     Pair(tableExpr, LITERAL_EXPR)
                 else null
             }
+            DICT -> {
+                val m = b.mark()
+                b.advanceLexer()
+                val isDict = parseDictExpr(b,l)
+                if (isDict){
+                    m.done(TABLE_EXPR)
+                    return Pair(m, LITERAL_EXPR)
+                }
+                else {
+                    m.rollbackTo()
+                    return null;
+                }
+            }
+            LIST -> {
+                val m = b.mark()
+                b.advanceLexer()
+                if(parseListExpr(b,l+1)){
+                    m.done(TABLE_EXPR)
+                    return Pair(m, LITERAL_EXPR)
+                }
+                else {
+                    m.rollbackTo()
+                    return null
+                }
+            }
+        }
+        return null
+    }
+
+    private fun parseListExpr(b:PsiBuilder, l : Int) : Boolean {
+        if(b.tokenType == LPAREN){
+            val listArgs = b.mark()
+            b.advanceLexer() // (
+            parseExprList(b,l + 1);
+            expectError(b, RPAREN) { "')'" }
+            listArgs.done(LIST_ARGS)
+            return true;
+            // val m = prefix.precede()
+            // prefix.done(TABLE_EXPR)
+            // return prefix
+        }
+        return false;
+    }
+
+
+    private fun parseDictExpr(b: PsiBuilder, l:Int) : Boolean {
+        if(b.tokenType == LPAREN){
+            b.advanceLexer()
+
+            parseDictFieldList(b,l);
+
+            expectError(b, RPAREN) {"')'"}
+
+            return true;
+        }
+        return false;
+    }
+
+    private fun parseDictFieldList(b:PsiBuilder,l:Int) : Boolean {
+        val result = parseDictField(b, l)
+        while (result != null) {
+            val sep = parseDictSep(b)
+            val sepError = if (sep == null) b.mark() else null
+            sepError?.error(", or ; expected")
+            val nextField = parseDictField(b, l)
+            if (nextField == null)
+                sepError?.drop()
+            nextField ?: break
+        }
+        return true
+    }
+
+    private fun parseDictField(b: PsiBuilder, l: Int): PsiBuilder.Marker? {
+        when (b.tokenType) {
+            LBRACK -> { // '[' expr ']' '=' expr
+                val m = b.mark()
+                b.advanceLexer()
+
+                expectExpr(b, l + 1) // expr
+
+                expectError(b, RBRACK) { "']'" }
+
+                expectError(b, ASSIGN) { "'='" }
+
+                expectExpr(b, l + 1) // expr
+
+                m.done(TABLE_FIELD)
+                m.setCustomEdgeTokenBinders(MY_LEFT_COMMENT_BINDER, MY_RIGHT_COMMENT_BINDER)
+                return m
+            }
+            ID -> { // ID '=' expr
+                val m = b.mark()
+                b.advanceLexer()
+                if (b.tokenType == ASSIGN) {
+                    b.advanceLexer() // =
+                    expectExpr(b, l + 1) // expr
+                    m.done(TABLE_FIELD)
+                    m.setCustomEdgeTokenBinders(MY_LEFT_COMMENT_BINDER, MY_RIGHT_COMMENT_BINDER)
+                    return m
+                }
+                m.rollbackTo()
+            }
+        }
+        return null
+    }
+
+    private fun parseDictSep(b: PsiBuilder): PsiBuilder.Marker? {
+        when (b.tokenType) {
+            COMMA -> {
+                val mark = b.mark()
+                b.advanceLexer()
+                mark.done(TABLE_FIELD_SEP)
+                return mark
+            }
         }
         return null
     }
@@ -284,6 +398,21 @@ object LuaExpressionParser {
             nextField ?: break
         }
         return true
+    }
+
+    fun parseExprList(b: PsiBuilder, l: Int): PsiBuilder.Marker? {
+        val expr = parseExpr(b, l)
+        while (expr != null) {
+            if (b.tokenType == COMMA) {
+                b.advanceLexer() // ,
+                val ex = parseExpr(b,l);
+                if(ex == null)
+                    break;
+                else
+                    expr == ex
+            } else break
+        }
+        return expr
     }
 
     private fun parseTableSep(b: PsiBuilder): PsiBuilder.Marker? {
@@ -341,16 +470,7 @@ object LuaExpressionParser {
         return null
     }
 
-    fun parseExprList(b: PsiBuilder, l: Int): PsiBuilder.Marker? {
-        val expr = parseExpr(b, l)
-        while (expr != null) {
-            if (b.tokenType == COMMA) {
-                b.advanceLexer() // ,
-                expectExpr(b, l + 1) // expr
-            } else break
-        }
-        return expr
-    }
+
 
     private fun error(builder: PsiBuilder, message: String) {
         builder.mark().error(message)

@@ -66,6 +66,7 @@ public interface LuaTypes {
   IElementType COLON = LuaParserDefinitionKt.createToken(":");
   IElementType COMMA = LuaParserDefinitionKt.createToken(",");
   IElementType CONCAT = LuaParserDefinitionKt.createToken("..");
+  IElementType DICT = LuaParserDefinitionKt.createToken("dict");
   IElementType DIV = LuaParserDefinitionKt.createToken("/");
   IElementType DO = LuaParserDefinitionKt.createToken("do");
   IElementType DOC_COMMENT = LuaParserDefinitionKt.createToken("DOC_COMMENT");
@@ -92,6 +93,7 @@ public interface LuaTypes {
   IElementType LBRACK = LuaParserDefinitionKt.createToken("[");
   IElementType LCURLY = LuaParserDefinitionKt.createToken("{");
   IElementType LE = LuaParserDefinitionKt.createToken("<=");
+  IElementType LIST = LuaParserDefinitionKt.createToken("list");
   IElementType LOCAL = LuaParserDefinitionKt.createToken("local");
   IElementType LPAREN = LuaParserDefinitionKt.createToken("(");
   IElementType LT = LuaParserDefinitionKt.createToken("<");
