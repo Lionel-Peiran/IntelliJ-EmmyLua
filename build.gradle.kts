@@ -42,8 +42,8 @@ data class BuildData(
 val buildDataList = listOf(
     BuildData(
         ideaSDKShortVersion = "212",
-        ideaSDKVersion = "202.6397.94",
-        sinceBuild = "202.0",
+        ideaSDKVersion = "193.5233.102",
+        sinceBuild = "192.0",
         untilBuild = "212.*",
         bunch = "212"
     ),
@@ -282,6 +282,7 @@ project(":") {
         downloadSources = false
         version = buildVersionData.ideaSDKVersion
         localPath = System.getenv("IDEA_HOME_${buildVersionData.ideaSDKShortVersion}")
+        setPlugins("java")
         sandboxDirectory = "${project.buildDir}/${buildVersionData.ideaSDKShortVersion}/idea-sandbox"
     }
 }

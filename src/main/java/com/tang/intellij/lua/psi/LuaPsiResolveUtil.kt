@@ -129,6 +129,7 @@ fun multiResolve(indexExpr: LuaIndexExpr, context: SearchContext): List<PsiEleme
             list.add(m)
         true
     })
+
     if (list.isEmpty()) {
         val tree = LuaDeclarationTree.get(indexExpr.containingFile)
         val declaration = tree.find(indexExpr)
@@ -157,7 +158,7 @@ fun resolve(indexExpr: LuaIndexExpr, idString: String, context: SearchContext): 
         val tree = LuaDeclarationTree.get(indexExpr.containingFile)
         val declaration = tree.find(indexExpr)
         if (declaration != null) {
-            return declaration.psi
+            return declaration.psi;
         }
     }
     return ret

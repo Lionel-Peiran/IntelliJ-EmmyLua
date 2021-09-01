@@ -310,6 +310,7 @@ classMethodDef ::= 'function' classMethodName funcBody {
         getParams
         isStatic
         getPresentation
+        processDeclarations
     ]
 }
 

@@ -41,7 +41,7 @@ class LuaSettings : PersistentStateComponent<LuaSettings> {
 
     //在未匹配end的statement后回车会自动补全
     // 暂时关闭
-    var isSmartCloseEnd: Boolean = false
+    var isSmartCloseEnd: Boolean = true
 
     //在代码完成时使用参数完成模板
     var autoInsertParameters: Boolean = false
@@ -76,7 +76,7 @@ class LuaSettings : PersistentStateComponent<LuaSettings> {
     /**
      * Lua language level
      */
-    var languageLevel = LuaLanguageLevel.LUA53
+    var languageLevel = LuaLanguageLevel.LUA54
 
     override fun getState(): LuaSettings? {
         return this

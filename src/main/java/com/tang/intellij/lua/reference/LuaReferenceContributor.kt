@@ -51,6 +51,7 @@ class LuaReferenceContributor : PsiReferenceContributor() {
         override fun getReferencesByElement(psiElement: PsiElement, processingContext: ProcessingContext): Array<PsiReference> {
             if (psiElement is LuaGotoStat && psiElement.id != null)
                 return arrayOf(GotoReference(psiElement))
+
             return PsiReference.EMPTY_ARRAY
         }
     }
@@ -70,9 +71,7 @@ class LuaReferenceContributor : PsiReferenceContributor() {
     }
 
     internal inner class IndexExprReferenceProvider : PsiReferenceProvider() {
-
-        override fun getReferencesByElement(psiElement: PsiElement, processingContext: ProcessingContext): Array<PsiReference> {
-            val indexExpr = psiElement as LuaIndexExpr
+        override fun getReferencesByElement(psiElement: PsiElement, processingContext: ProcessingContext): Array<PsiReference> { val indexExpr = psiElement as LuaIndexExpr
             val id = indexExpr.id
             if (id != null) {
                 return arrayOf(LuaIndexReference(indexExpr, id))
@@ -86,7 +85,7 @@ class LuaReferenceContributor : PsiReferenceContributor() {
 
     internal inner class NameReferenceProvider : PsiReferenceProvider() {
         override fun getReferencesByElement(psiElement: PsiElement, processingContext: ProcessingContext): Array<PsiReference> {
-            return arrayOf(LuaNameReference(psiElement as LuaNameExpr))
+           return arrayOf(LuaNameReference(psiElement as LuaNameExpr))
         }
     }
 }

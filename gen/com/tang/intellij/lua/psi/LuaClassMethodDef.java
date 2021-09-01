@@ -57,4 +57,8 @@ public interface LuaClassMethodDef extends LuaClassMethod, LuaDeclaration, LuaSt
   @NotNull
   ItemPresentation getPresentation();
 
+  //WARNING: processDeclarations(...) is skipped
+  //matching processDeclarations(LuaClassMethodDef, ...)
+  //methods are not found in LuaPsiImplUtilKt
+
 }

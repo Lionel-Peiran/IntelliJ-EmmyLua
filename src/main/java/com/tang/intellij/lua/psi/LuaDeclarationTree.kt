@@ -21,7 +21,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.BitUtil
+import com.intellij.psi.ResolveState
 import java.util.*
+import kotlin.*
 
 interface LuaDeclarationTree {
     companion object {
@@ -171,7 +173,10 @@ private open class Scope(
         var cur: Node? = lastOrNull { it.pos < pos }
         while (cur != null) {
             if (cur is Declaration && !process(cur))
+            {
+                val demoName = cur.name
                 return
+            }
             if (cur is Scope && !cur.walkOver(process))
                 return
             cur = cur.prev
@@ -192,9 +197,17 @@ private open class Scope(
         } else if (expr is LuaIndexExpr) {
             val name = expr.name ?: return null
             val declaration = find(expr.prefixExpr)
-            return declaration?.findField(name)
+            val ret = declaration?.findField(name);
+            return ret;
         }
         return null
+    }
+
+    fun multiFind(expr: LuaExpr) : List<PsiElement>?{
+        val list = mutableListOf<PsiElement>()
+        val name = expr.name ?: return null;
+        walkUp(tree.getPosition(expr),0) {  val temp = it.findField(name);if(temp != null) list.add(temp.psi); true }
+        return list
     }
 }
 
@@ -291,6 +304,8 @@ private abstract class LuaDeclarationTreeBase(val file: PsiFile) : LuaRecursiveV
 
     private fun createDeclaration(name: String, psi: PsiNamedElement, flags: Int): Declaration {
         val first = if (psi is LuaExpr) find(psi) else null
+        val r = ResolveState()
+        // psi.processDeclarations(PsiScopeProcessorImpl.INSTANCE,ResolveState.initial(),psi.firstChild,psi);
         return Declaration(name, getPosition(psi), psi, flags, first)
     }
 
@@ -327,6 +342,8 @@ private abstract class LuaDeclarationTreeBase(val file: PsiFile) : LuaRecursiveV
     }
 
     override fun visitClassMethodName(o: LuaClassMethodName) {
+        val demo = arrayOf(o.id,o.expr,o.dot,o.colon);
+        super.visitClassMethodName(o);
     }
 
     override fun visitAssignStat(o: LuaAssignStat) {

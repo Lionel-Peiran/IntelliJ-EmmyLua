@@ -67,6 +67,8 @@ class LuaEnterAfterUnmatchedBraceHandler : EnterHandlerDelegate {
             var shouldClose = false
             var range: PsiElement? = null
             var cur: PsiElement = lElement
+            if(cur.parent.node.elementType === LuaTypes.LIST_ARGS || cur.parent.node.elementType === LuaTypes.TABLE_EXPR)
+                return EnterHandlerDelegate.Result.Continue
             while (true) {
                 val searched = cur.parent
                 if (searched == null || searched is PsiFile) break

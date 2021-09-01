@@ -15,20 +15,16 @@
  */
 
 package com.tang.intellij.lua.reference
-
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiReference
-import com.tang.intellij.lua.search.SearchContext
+import com.intellij.psi.ResolveResult
 
-/**
- *
- * Created by tangzx on 2017/4/9.
- */
-interface LuaReference : PsiReference {
-    fun resolve(context: SearchContext): PsiElement?
-}
+class LuaResolveResult(private val res: PsiElement) : ResolveResult{
 
-interface LuaClassMemberReference : PsiPolyVariantReference {
-    fun resolve(context: SearchContext): PsiElement?
+    override fun getElement(): PsiElement? {
+        return this.res;
+    }
+
+    override fun isValidResult(): Boolean {
+        return true;
+    }
 }

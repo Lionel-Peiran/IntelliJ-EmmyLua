@@ -39,12 +39,14 @@ class LuaClassMemberIndex : IntStubIndexExtension<LuaClassMember>() {
             StubIndex.getElements(StubKeys.CLASS_MEMBER, s, project, scope, LuaClassMember::class.java)
 
     companion object {
+        const val __ALL_CLASS__ = "__ALL_CLASS__";
+
         val instance = LuaClassMemberIndex()
 
         fun process(key: String, context: SearchContext, processor: Processor<LuaClassMember>): Boolean {
             if (context.isDumb)
                 return false
-            val all = LuaClassMemberIndex.instance.get(key.hashCode(), context.project, context.scope)
+            val all = instance.get(key.hashCode(), context.project, context.scope)
             return ContainerUtil.process(all, processor)
         }
 
@@ -130,6 +132,7 @@ class LuaClassMemberIndex : IntStubIndexExtension<LuaClassMember>() {
         fun indexStub(indexSink: IndexSink, className: String, memberName: String) {
             indexSink.occurrence(StubKeys.CLASS_MEMBER, className.hashCode())
             indexSink.occurrence(StubKeys.CLASS_MEMBER, "$className*$memberName".hashCode())
+            indexSink.occurrence(StubKeys.CLASS_MEMBER, "$__ALL_CLASS__*$memberName".hashCode())
         }
     }
 }

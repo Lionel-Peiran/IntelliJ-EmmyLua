@@ -18,19 +18,24 @@ package com.tang.intellij.lua.reference
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.util.IncorrectOperationException
 import com.tang.intellij.lua.psi.LuaElementFactory
 import com.tang.intellij.lua.psi.LuaIndexExpr
 import com.tang.intellij.lua.psi.resolve
 import com.tang.intellij.lua.search.SearchContext
+import com.tang.intellij.lua.reference.LuaResolveResult
+import com.tang.intellij.lua.stubs.index.LuaClassMemberIndex
+import com.intellij.util.Processor
 
 /**
  *
  * Created by TangZX on 2016/12/4.
  */
 class LuaIndexReference internal constructor(element: LuaIndexExpr, private val id: PsiElement)
-    : PsiReferenceBase<LuaIndexExpr>(element), LuaReference {
+    : PsiReferenceBase<LuaIndexExpr>(element), LuaClassMemberReference {
 
     override fun getRangeInElement(): TextRange {
         val start = id.node.startOffset - myElement.node.startOffset
@@ -63,6 +68,20 @@ class LuaIndexReference internal constructor(element: LuaIndexExpr, private val 
         }
         return ref
     }
+
+    override fun multiResolve(p0: Boolean): Array<PsiElementResolveResult>? {
+        // TODO("Not yet implemented")
+        val list = mutableListOf<PsiElementResolveResult>();
+        val name = myElement.name?:return null;
+        LuaClassMemberIndex.process(LuaClassMemberIndex.__ALL_CLASS__,name,SearchContext.get(myElement.project),Processor {
+            list.add(PsiElementResolveResult(it))
+            true
+        },false)
+        if(list.isEmpty())
+            return null;
+        return list.toTypedArray();
+    }
+
 
     override fun getVariants(): Array<Any> = emptyArray()
 }
