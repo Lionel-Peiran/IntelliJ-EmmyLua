@@ -1,18 +1,4 @@
-/*
- * Copyright (c) 2017. tangzx(love.tangzx@qq.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.tang.intellij.lua.debugger.remote
 
@@ -33,10 +19,11 @@ import com.tang.intellij.lua.debugger.remote.commands.DebugCommand
 import com.tang.intellij.lua.debugger.remote.commands.GetStackCommand
 import com.tang.intellij.lua.psi.LuaFileUtil
 import java.net.BindException
+import java.util.*
 
 /**
 
- * Created by TangZX on 2016/12/30.
+ * First Created on 2016/12/30.
  */
 open class LuaMobDebugProcess(session: XDebugSession) : LuaDebugProcess(session), MobServerListener {
 
@@ -150,7 +137,7 @@ open class LuaMobDebugProcess(session: XDebugSession) : LuaDebugProcess(session)
         for (i in 1 until chunkParts.size) {
             val chunkPart = chunkParts[i]
             val pathPart = pathParts[i]
-            if (chunkPart.toLowerCase() != pathPart.toLowerCase()) {
+            if (chunkPart.lowercase(Locale.getDefault()) != pathPart.lowercase(Locale.getDefault())) {
                 break
             }
             neq = i
@@ -175,7 +162,7 @@ open class LuaMobDebugProcess(session: XDebugSession) : LuaDebugProcess(session)
     private fun getShortPath(file: VirtualFile): String {
         val myBaseDir = this.baseDir
         val path = file.canonicalPath
-        if (myBaseDir != null && path != null && path.toLowerCase().startsWith(myBaseDir.toLowerCase())) {
+        if (myBaseDir != null && path != null && path.lowercase(Locale.getDefault()).startsWith(myBaseDir.toLowerCase())) {
             return path.substring(myBaseDir.length + 1)
         }
         return LuaFileUtil.getShortPath(session.project, file)

@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2017. tangzx(love.tangzx@qq.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import de.undercouch.gradle.tasks.download.*
 import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
@@ -30,12 +14,11 @@ data class BuildData(
     val ideaSDKVersion: String,
     val sinceBuild: String,
     val untilBuild: String,
-    val archiveName: String = "IntelliJ-EmmyLua",
+    val archiveName: String = "EmmmmyLua",
     val jvmTarget: String = "1.8",
     val targetCompatibilityLevel: JavaVersion = JavaVersion.VERSION_11,
     val explicitJavaDependency: Boolean = true,
     val bunch: String = ideaSDKShortVersion,
-    // https://github.com/JetBrains/gradle-intellij-plugin/issues/403#issuecomment-542890849
     val instrumentCodeCompilerVersion: String = ideaSDKVersion
 )
 
@@ -46,70 +29,6 @@ val buildDataList = listOf(
         sinceBuild = "192.0",
         untilBuild = "212.*",
         bunch = "212"
-    ),
-    BuildData(
-        ideaSDKShortVersion = "211",
-        ideaSDKVersion = "211.7142.45",
-        sinceBuild = "211",
-        untilBuild = "211.*",
-        bunch = "203"
-    ),
-    BuildData(
-        ideaSDKShortVersion = "203",
-        ideaSDKVersion = "IC-203.5981.155",
-        sinceBuild = "203",
-        untilBuild = "203.*"
-    ),
-    BuildData(
-        ideaSDKShortVersion = "202",
-        ideaSDKVersion = "IC-202.6397.94",
-        sinceBuild = "202",
-        untilBuild = "202.*",
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
-    ),
-    BuildData(
-        ideaSDKShortVersion = "201",
-        ideaSDKVersion = "IC-201.8743.12",
-        sinceBuild = "201",
-        untilBuild = "201.*",
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
-    ),
-    BuildData(
-        ideaSDKShortVersion = "193",
-        ideaSDKVersion = "IC-193.5233.102",
-        sinceBuild = "193",
-        untilBuild = "194.*",
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
-    ),
-    BuildData(
-        ideaSDKShortVersion = "182",
-        ideaSDKVersion = "IC-182.2371.4",
-        sinceBuild = "182",
-        untilBuild = "193.*",
-        explicitJavaDependency = false,
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
-    ),
-    BuildData(
-        ideaSDKShortVersion = "172",
-        ideaSDKVersion = "IC-172.4574.19",
-        sinceBuild = "172",
-        untilBuild = "181.*",
-        explicitJavaDependency = false,
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
-    ),
-    BuildData(
-        ideaSDKShortVersion = "171",
-        ideaSDKVersion = "IC-171.4694.73",
-        sinceBuild = "171",
-        untilBuild = "171.*",
-        explicitJavaDependency = false,
-        jvmTarget = "1.6",
-        targetCompatibilityLevel = JavaVersion.VERSION_1_8
     )
 )
 
@@ -125,32 +44,8 @@ val isWin = Os.isFamily(Os.FAMILY_WINDOWS)
 
 val isCI = System.getenv("APPVEYOR") != null
 
-// CI
-if (isCI) {
-    version =
-        System.getenv("APPVEYOR_REPO_TAG_NAME") ?:
-        System.getenv("APPVEYOR_BUILD_VERSION")
-    exec {
-        executable = "git"
-        args("config", "--global", "user.email", "love.tangzx@qq.com")
-    }
-    exec {
-        executable = "git"
-        args("config", "--global", "user.name", "tangzx")
-    }
-}
 
-version = "${version}-IDEA${buildVersion}"
-
-fun getRev(): String {
-    val os = ByteArrayOutputStream()
-    exec {
-        executable = "git"
-        args("rev-parse", "HEAD")
-        standardOutput = os
-    }
-    return os.toString().substring(0, 7)
-}
+version = "NetEase-Special-Version-1.0"
 
 task("downloadEmmyDebugger", type = Download::class) {
     src(arrayOf(
@@ -172,27 +67,6 @@ task("unzipEmmyDebugger", type = Copy::class) {
         into("x86")
     }
     destinationDir = file("temp")
-}
-
-task("installEmmyDebugger", type = Copy::class) {
-    dependsOn("unzipEmmyDebugger")
-    from("temp/x64/") {
-        include("emmy_core.dll")
-        into("debugger/emmy/windows/x64")
-    }
-    from("temp/x86/") {
-        include("emmy_core.dll")
-        into("debugger/emmy/windows/x86")
-    }
-    from("temp") {
-        include("emmy_core.so")
-        into("debugger/emmy/linux")
-    }
-    from("temp") {
-        include("emmy_core.dylib")
-        into("debugger/emmy/mac")
-    }
-    destinationDir = file("src/main/resources")
 }
 
 project(":") {
@@ -222,35 +96,8 @@ project(":") {
         targetCompatibility = buildVersionData.targetCompatibilityLevel
     }
 
-    task("bunch") {
-        doLast {
-            val rev = getRev()
-            // reset
-            exec {
-                executable = "git"
-                args("reset", "HEAD", "--hard")
-            }
-            // clean untracked files
-            exec {
-                executable = "git"
-                args("clean", "-d", "-f")
-            }
-            // switch
-            exec {
-                executable = if (isWin) "bunch/bin/bunch.bat" else "bunch/bin/bunch"
-                args("switch", ".", buildVersionData.bunch)
-            }
-            // reset to HEAD
-            exec {
-                executable = "git"
-                args("reset", rev)
-            }
-        }
-    }
-
     tasks {
         buildPlugin {
-            dependsOn("installEmmyDebugger")
             archiveBaseName.set(buildVersionData.archiveName)
             from(fileTree(resDir) { include("debugger/**") }) {
                 into("/${project.name}/classes/")

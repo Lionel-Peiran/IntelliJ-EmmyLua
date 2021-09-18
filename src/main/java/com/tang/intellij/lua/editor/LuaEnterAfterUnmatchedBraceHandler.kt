@@ -1,18 +1,4 @@
-/*
- * Copyright (c) 2017. tangzx(love.tangzx@qq.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.tang.intellij.lua.editor
 
@@ -32,11 +18,12 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.tang.intellij.lua.lang.LuaLanguage
 import com.tang.intellij.lua.project.LuaSettings
 import com.tang.intellij.lua.psi.LuaIndentRange
+import com.tang.intellij.lua.psi.LuaTableExpr
 import com.tang.intellij.lua.psi.LuaTypes
 
 /**
  * 回车时的自动补全
- * Created by tangzx on 2016/11/26.
+ * First Created on 2016/11/26.
  */
 class LuaEnterAfterUnmatchedBraceHandler : EnterHandlerDelegate {
 
@@ -67,11 +54,11 @@ class LuaEnterAfterUnmatchedBraceHandler : EnterHandlerDelegate {
             var shouldClose = false
             var range: PsiElement? = null
             var cur: PsiElement = lElement
-            if(cur.parent.node.elementType === LuaTypes.LIST_ARGS || cur.parent.node.elementType === LuaTypes.TABLE_EXPR)
-                return EnterHandlerDelegate.Result.Continue
+            // if(cur.parent.node.elementType === LuaTypes.LIST_ARGS || cur.parent.node.elementType === LuaTypes.TABLE_EXPR)
+            //     return EnterHandlerDelegate.Result.Continue
             while (true) {
                 val searched = cur.parent
-                if (searched == null || searched is PsiFile) break
+                if (searched == null || searched is PsiFile || searched is LuaTableExpr) break
                 if (searched is LuaIndentRange) {
                     val endType = getEnd(searched.node.elementType)
                     val endChild = searched.node.findChildByType(endType)
